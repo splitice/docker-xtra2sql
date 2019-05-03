@@ -2,12 +2,12 @@ FROM debian
 MAINTAINER SplitIce mheard@x4b.net
 
 RUN apt-get update; \
-    apt-get -y install wget lsb-release gpgv gnupg2 coreutils rsync qpress; \
+    apt-get -y install wget lsb-release gpgv gnupg2 coreutils rsync; \
     wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb; \
     dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb; \
     percona-release enable-only tools release; \
     apt-get update; \
-    apt-get -y install percona-xtrabackup-80 mariadb-server mariadb-client
+    apt-get -y install percona-xtrabackup-80 mariadb-server mariadb-client percona-qpress
     
 ADD restore.sh /opt/restore.sh
 
