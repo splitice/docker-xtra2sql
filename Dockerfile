@@ -7,7 +7,7 @@ RUN apt-get update; \
     dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb; \
     percona-release enable-only tools release; \
     apt-get update; \
-    apt-get -y install percona-xtrabackup-80
+    apt-get -y install percona-xtrabackup-80 mariadb-server \
     
 ADD restore.sh /opt/restore.sh
 
