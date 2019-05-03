@@ -3,7 +3,7 @@
 set -x
 
 if [[ -d /backups/output/db ]]; then
-    if [[ -f "/backups/output/db/xtrabackup_checkpoints "]]; then
+    if [[ -f "/backups/output/db/xtrabackup_checkpoints" ]]; then
         if [[ $(md5sum /backups/base/xtrabackup_checkpoints | awk '{print $1}') == $(md5sum /backups/output/db/xtrabackup_checkpoints | awk '{print $1}') ]]; then
             echo "Previous backup supplied"
         else
