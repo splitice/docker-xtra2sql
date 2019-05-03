@@ -14,7 +14,7 @@ if [[ -d /backups/output/db ]]; then
     fi
 fi
 
-if [[ -d /backups/output/sql ]];
+if [[ -d /backups/output/sql ]]; then
     rm /backups/output/sql -R -f
 fi
 
