@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm /backups/base/* -R -f
 cp /backups/base/ /backups/output -R
 if [[ -d /backups/increment ]]; then
     xtrabackup --prepare --apply-log-only --target-dir=/backups/output
