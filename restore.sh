@@ -18,7 +18,7 @@ if [[ -d /backups/output/sql ]]; then
     rm /backups/output/sql -R -f
 fi
 
-if [[ ! -f "/backups/output/db/xtrabackup_checkpoints "]]; then
+if [[ ! -f "/backups/output/db/xtrabackup_checkpoints" ]]; then
     cp /backups/base/ /backups/output/db -R
 fi
 
