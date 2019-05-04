@@ -22,13 +22,20 @@ if [[ ! -f "/backups/output/db/xtrabackup_checkpoints" ]]; then
     cp /backups/base/ /backups/output/db -R
 fi
 
+function decompress_if_needed {
+    path="$1"
+    if [[ -f "$path/ibdata1.qp" && ! -f "$path/ibdata1" ]]; then
+        xtrabackup --decompress --target-dir="$path"
+    fi
+}
+
 if [[ -d /backups/increment ]]; then
-    xtrabackup --decompress --target-dir=/backups/output/db
-    xtrabackup --decompress --target-dir=/backups/output/increment
+    decompress_if_needed /backups/output/db
+    decompress_if_needed /backups/output/increment
     xtrabackup --prepare --apply-log-only --target-dir=/backups/output/db
     xtrabackup --prepare --target-dir=/backups/output/db --incremental-dir=/backups/increment
 else
-    xtrabackup --decompress --target-dir=/backups/output/db
+    decompress_if_needed /backups/output/db
     xtrabackup --prepare --target-dir=/backups/output/db
 fi
 
@@ -36,9 +43,15 @@ echo "Starting MySQL"
 /usr/sbin/mysqld --datadir /backups/output/db &
 sleep 15
 
-mkdir -p /backups/output/sql
-mysqldump --tab=/backups/output/sql --all-databases
+databases-$(echo 'show databases' | mysql)
+
+for db in $databases; do
+    mkdir -p /backups/output/sql/$db
+    mysqldump --tab=/backups/output/sql/$db $db
+done
 
 echo "==[ Finished ]=="
 echo "SQL files are now in /backups/output/sql/table.sql"
 echo "Importable files are now in /backups/output/db"
+
+sleep inf
