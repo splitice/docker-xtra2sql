@@ -43,9 +43,8 @@ echo "Starting MySQL"
 /usr/sbin/mysqld --datadir /backups/output/db &
 sleep 15
 
-databases-$(echo 'show databases' | mysql)
 
-for db in $databases; do
+echo 'show databases' | mysql | grep -v mysql | grep -v information_schema | grep -v performance_schema | tail -n+2 | while read -r db ; do
     mkdir -p /backups/output/sql/$db
     mysqldump --tab=/backups/output/sql/$db $db
 done
