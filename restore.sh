@@ -26,6 +26,7 @@ function decompress_if_needed {
     path="$1"
     if [[ -f "$path/ibdata1.qp" && ! -f "$path/ibdata1" ]]; then
         xtrabackup --decompress --target-dir="$path"
+        find "$path" -iname '*.qp' -delete
     fi
 }
 
@@ -33,14 +34,16 @@ if [[ -d /backups/increment ]]; then
     decompress_if_needed /backups/output/db
     decompress_if_needed /backups/output/increment
     xtrabackup --prepare --apply-log-only --target-dir=/backups/output/db
-    xtrabackup --prepare --target-dir=/backups/output/db --incremental-dir=/backups/increment
+    xtrabackup --prepare --rebuild-indexes --target-dir=/backups/output/db --incremental-dir=/backups/increment
 else
     decompress_if_needed /backups/output/db
-    xtrabackup --prepare --target-dir=/backups/output/db
+    xtrabackup --prepare --rebuild-indexes --target-dir=/backups/output/db
 fi
 
 echo "Starting MySQL"
-/usr/sbin/mysqld --datadir /backups/output/db &
+mkdir -p /var/run/mysqld
+chown mysql:mysql -R /var/run/mysqld /backups/output/
+/usr/sbin/mysqld --skip-grant-tables --datadir /backups/output/db --innodb-buffer-pool-size=128M &
 sleep 15
 
 
