@@ -27,12 +27,15 @@ function decompress_if_needed {
     if [[ -f "$path/ibdata1.qp" && ! -f "$path/ibdata1" ]]; then
         xtrabackup --decompress --target-dir="$path"
         find "$path" -iname '*.qp' -delete
+    elif [[ -f "$path/ibdata1.delta.qp" && ! -f "$path/ibdata1.delta" ]]; then
+        xtrabackup --decompress --target-dir="$path"
+        find "$path" -iname '*.qp' -delete
     fi
 }
 
 if [[ -d /backups/increment ]]; then
     decompress_if_needed /backups/output/db
-    decompress_if_needed /backups/output/increment
+    decompress_if_needed /backups/increment
     xtrabackup --prepare --apply-log-only --target-dir=/backups/output/db
     xtrabackup --prepare --rebuild-indexes --target-dir=/backups/output/db --incremental-dir=/backups/increment
 else
