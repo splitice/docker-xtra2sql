@@ -43,15 +43,19 @@ else
     xtrabackup --prepare --rebuild-indexes --target-dir=/backups/output/db
 fi
 
+sed '/log_error/d' /etc/mysql/mariadb.conf.d/50-server.cnf > sed '/log_error/d' /etc/mysql/mariadb.conf.d/50-server.cnf2
+rm /etc/mysql/mariadb.conf.d/50-server.cnf
+mv /etc/mysql/mariadb.conf.d/50-server.cnf2 /etc/mysql/mariadb.conf.d/50-server.cnf
+
 echo "Starting MySQL"
 mkdir -p /var/run/mysqld
 chown mysql:mysql -R /var/run/mysqld /backups/output/
-/usr/sbin/mysqld --skip-grant-tables --datadir /backups/output/db --innodb-buffer-pool-size=128M --bind-address 127.0.0.1:599 &
+/usr/sbin/mysqld --skip-grant-tables --datadir=/backups/output/db --innodb-buffer-pool-size=128M --innodb_log_buffer_size=64M --innodb-read-only=1 --event-scheduler=disabled --bind-address=127.0.0.1 --port=599 &
 
 sleep 10
 
 
-echo 'show databases' | mysql  -h127.0.0.1 -P599 | grep -v mysql | grep -v information_schema | grep -v performance_schema | tail -n+2 | while read -r db ; do
+echo 'show databases' | mysql -h127.0.0.1 -P599 | grep -v mysql | grep -v information_schema | grep -v performance_schema | tail -n+2 | while read -r db ; do
     mkdir -p /backups/output/sql/$db
     mysqldump -h127.0.0.1 -P599  --tab=/backups/output/sql/$db $db
 done
