@@ -48,15 +48,12 @@ mkdir -p /var/run/mysqld
 chown mysql:mysql -R /var/run/mysqld /backups/output/
 /usr/sbin/mysqld --skip-grant-tables --datadir /backups/output/db --innodb-buffer-pool-size=128M &
 
-while [[ ! -f /var/run/mysqld/mysqld.sock ]]; do
-    sleep 1
-done
 sleep 10
 
 
-echo 'show databases' | mysql | grep -v mysql | grep -v information_schema | grep -v performance_schema | tail -n+2 | while read -r db ; do
+echo 'show databases' | mysql  -h127.0.0.1 | grep -v mysql | grep -v information_schema | grep -v performance_schema | tail -n+2 | while read -r db ; do
     mkdir -p /backups/output/sql/$db
-    mysqldump --tab=/backups/output/sql/$db $db
+    mysqldump -h127.0.0.1 --tab=/backups/output/sql/$db $db
 done
 
 echo "==[ Finished ]=="
