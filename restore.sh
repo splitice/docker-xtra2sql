@@ -47,7 +47,11 @@ echo "Starting MySQL"
 mkdir -p /var/run/mysqld
 chown mysql:mysql -R /var/run/mysqld /backups/output/
 /usr/sbin/mysqld --skip-grant-tables --datadir /backups/output/db --innodb-buffer-pool-size=128M &
-sleep 15
+
+while [[ ! -f /var/run/mysqld/mysqld.sock ]]; do
+    sleep 1
+done
+sleep 10
 
 
 echo 'show databases' | mysql | grep -v mysql | grep -v information_schema | grep -v performance_schema | tail -n+2 | while read -r db ; do
