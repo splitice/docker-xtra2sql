@@ -65,4 +65,3 @@ done
 echo "==[ Finished ]=="
 echo "SQL files are now in /backups/output/sql/table.sql"
 echo "Importable files are now in /backups/output/db"
-sleep inf
