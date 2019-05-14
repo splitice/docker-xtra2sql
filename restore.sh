@@ -43,14 +43,16 @@ else
     innobackupex --apply-log /backups/output/db
 fi
 
-sed '/log_error/d' /etc/mysql/mariadb.conf.d/50-server.cnf > sed '/log_error/d' /etc/mysql/mariadb.conf.d/50-server.cnf2
-rm /etc/mysql/mariadb.conf.d/50-server.cnf
-mv /etc/mysql/mariadb.conf.d/50-server.cnf2 /etc/mysql/mariadb.conf.d/50-server.cnf
+#remove mysql user
+sed '/^user/d' /etc/mysql/my.cnf > /tmp/a
+mv /tmp/a /etc/mysql/my.cnf
+
+log_file_size=$(cat /backups/output/db/backup-my.cnf | grep log_file_size | awk -F= '{print $2}')
 
 echo "Starting MySQL"
 mkdir -p /var/run/mysqld
 chown mysql:mysql -R /var/run/mysqld /backups/output/
-/usr/sbin/mysqld --skip-grant-tables --datadir=/backups/output/db --innodb-buffer-pool-size=128M --innodb_log_buffer_size=64M --innodb-read-only=1 --event-scheduler=disabled --bind-address=127.0.0.1 --port=599 --user=root &
+/usr/sbin/mysqld --skip-grant-tables --datadir=/backups/output/db --innodb-buffer-pool-size=128M --innodb_log_buffer_size=64M --innodb-read-only=1 --event-scheduler=disabled --bind-address=127.0.0.1 --port=599 --user=root --innodb-log-file-size=$log_file_size &
 
 sleep 10
 
