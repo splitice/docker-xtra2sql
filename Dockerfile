@@ -7,8 +7,6 @@ RUN apt-get update; \
     dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb; \
     percona-release enable-only tools release; \
     apt-get update; \
-    debconf-set-selections <<< 'mariadb-server-10.0 mysql-server/root_password password rootpass'; \
-    debconf-set-selections <<< 'mariadb-server-10.0 mysql-server/root_password_again password rootpass'; \
     DEBIAN_FRONTEND=noninteractive  apt-get -y install percona-xtrabackup mariadb-server mariadb-client qpress
     
 ADD restore.sh /opt/restore.sh
