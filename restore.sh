@@ -50,7 +50,7 @@ mv /etc/mysql/mariadb.conf.d/50-server.cnf2 /etc/mysql/mariadb.conf.d/50-server.
 echo "Starting MySQL"
 mkdir -p /var/run/mysqld
 chown mysql:mysql -R /var/run/mysqld /backups/output/
-/usr/sbin/mysqld --skip-grant-tables --datadir=/backups/output/db --innodb-buffer-pool-size=128M --innodb_log_buffer_size=64M --innodb-read-only=1 --event-scheduler=disabled --bind-address=127.0.0.1 --port=599 &
+/usr/sbin/mysqld --skip-grant-tables --datadir=/backups/output/db --innodb-buffer-pool-size=128M --innodb_log_buffer_size=64M --innodb-read-only=1 --event-scheduler=disabled --bind-address=127.0.0.1 --port=599 --user=root &
 
 sleep 10
 
@@ -63,5 +63,3 @@ done
 echo "==[ Finished ]=="
 echo "SQL files are now in /backups/output/sql/table.sql"
 echo "Importable files are now in /backups/output/db"
-
-sleep inf
