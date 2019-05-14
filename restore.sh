@@ -25,10 +25,10 @@ fi
 function decompress_if_needed {
     path="$1"
     if [[ -f "$path/ibdata1.qp" && ! -f "$path/ibdata1" ]]; then
-        innobackupex --decompress --target-dir="$path"
+        innobackupex --decompress "$path"
         find "$path" -iname '*.qp' -delete
     elif [[ -f "$path/ibdata1.delta.qp" && ! -f "$path/ibdata1.delta" ]]; then
-        innobackupex --decompress --target-dir="$path"
+        innobackupex --decompress "$path"
         find "$path" -iname '*.qp' -delete
     fi
 }
