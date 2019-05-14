@@ -36,11 +36,11 @@ function decompress_if_needed {
 if [[ -d /backups/increment ]]; then
     decompress_if_needed /backups/output/db
     decompress_if_needed /backups/increment
-    innobackupex --prepare --apply-log-only --target-dir=/backups/output/db
-    innobackupex --prepare --rebuild-indexes --target-dir=/backups/output/db --incremental-dir=/backups/increment
+    innobackupex --prepare --apply-log /backups/output/db
+    innobackupex --prepare /backups/output/db --incremental --incremental-basedir=/backups/increment
 else
     decompress_if_needed /backups/output/db
-    innobackupex --prepare --rebuild-indexes --target-dir=/backups/output/db
+    innobackupex --prepare /backups/output/db
 fi
 
 sed '/log_error/d' /etc/mysql/mariadb.conf.d/50-server.cnf > sed '/log_error/d' /etc/mysql/mariadb.conf.d/50-server.cnf2
